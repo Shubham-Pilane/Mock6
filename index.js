@@ -20,7 +20,7 @@ app.use("/blog",blogRoute)
 
 
 
-let port=process.env.PORT
+let port=8000
 app.listen(port,async()=>{
     try {
         await connection
