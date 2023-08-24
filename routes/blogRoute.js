@@ -22,27 +22,38 @@ const verifyToken=(req,res,next)=>{
 }
    
 //to add the data in database
-router.post("/add",verifyToken,async(req,res)=>{
-    const {title,content,category}=req.body
-    const userID=req.user.id
-    try {
-        const user=await UserModel.findById(userID)
-        if(!user) return res.send("Please create Account first !")
+router.post("/add", verifyToken, async (req, res) => {
+  const { title, content, category } = req.body;
 
-        const newBlog= await BlogModel.create({
-            user:userID,
-            title,
-            content,
-            category,
-            date: new Date(),
-            likes:0,
-            comments:[]
-        })
-        res.status(201).json(newBlog)
-    } catch (error) {
-        res.status(400).json({msg:"Error"})
+  try {
+    const userID = req.userID; 
+    console.log(userID)
+    const user = await UserModel.findById(userID);
+
+    if (!user) {
+      return res.status(400).json({ msg: "User not found" });
     }
-})
+
+    const newBlog = await BlogModel.create({
+      user: {
+        id: user._id,
+        username: user.username,
+        avatar: user.avatar 
+      },
+      title,
+      content,
+      category,
+      date: new Date(),
+      likes: 0,
+      comments: []
+    });
+
+    res.status(201).json(newBlog);
+  } catch (error) {
+    console.error("Error creating blog:", error);
+    res.status(500).json({ msg: "Server error" });
+  }
+});
 
 
 // Get all blogs (filtered by title and/or category, sorted by date)
