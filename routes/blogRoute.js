@@ -57,7 +57,7 @@ router.post("/add", verifyToken, async (req, res) => {
 
 
 // Get all blogs (filtered by title and/or category, sorted by date)
-router.get('/', verifyToken, async (req, res) => {
+router.get('/', async (req, res) => {
     const { title, category, sort, order } = req.query;
   
     const query = {};
